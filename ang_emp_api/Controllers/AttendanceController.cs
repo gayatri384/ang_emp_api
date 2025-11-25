@@ -113,8 +113,6 @@ namespace ang_emp_api.Controllers
 
             return Ok(result);
         }
-
-
     }
 
 }

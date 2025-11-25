@@ -114,5 +114,46 @@ namespace ang_emp_api.Controllers
 
             return Ok(leaves);
         }
+
+        // for search and pagination
+        [HttpGet("list-paged")]
+        public async Task<IActionResult> GetLeavesPaged(
+    [FromQuery] int page = 1,
+    [FromQuery] int pageSize = 6,
+    [FromQuery] string? search = null)
+        {
+            var query = _context.Leaves
+                .Include(l => l.Employee)
+                .AsQueryable();
+
+            // Search (EmployeeName, Status, Reason)
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.ToLower();
+                query = query.Where(l =>
+                   l.Employee.FullName.ToLower().Contains(search) ||
+                   l.Status.ToLower().Contains(search) ||
+                   l.Reason.ToLower().Contains(search)
+                );
+            }
+
+            var totalRecords = await query.CountAsync();
+
+            var leaves = await query
+                .OrderByDescending(l => l.StartDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return Ok(new
+            {
+                data = leaves,
+                page,
+                pageSize,
+                totalRecords,
+                totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize)
+            });
+        }
+
     }
 }
