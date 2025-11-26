@@ -19,7 +19,7 @@ namespace ang_emp_api.Models
         public string? Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
 
-        // Replace Department string with DepartmentId
+        // Rep Department string with DepartmentId
         public int? DepartmentId { get; set; }
         [ForeignKey("DepartmentId")]
         public Department? Department { get; set; }
