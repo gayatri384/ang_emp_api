@@ -7,3 +7,4 @@
         public string Status { get; set; } // Present, Absent, Leave
     }
 }
+
